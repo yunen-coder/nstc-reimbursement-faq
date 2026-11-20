@@ -1,0 +1,1247 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>國科會計畫經費報銷查詢網站</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet">
+
+  <style>
+    :root {
+      --navy: #172b4d;
+      --blue: #315b9a;
+      --light-blue: #edf3fb;
+      --page-bg: #f5f7fb;
+      --text: #263449;
+      --muted: #718096;
+      --border: #e6ebf2;
+    }
+
+    body {
+      background: var(--page-bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Noto Sans TC", sans-serif;
+    }
+
+    .navbar {
+      background: var(--navy);
+      box-shadow: 0 2px 12px rgba(0,0,0,.08);
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      letter-spacing: .5px;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, #172b4d, #315b9a);
+      color: #fff;
+      padding: 42px 0 38px;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      font-weight: 750;
+    }
+
+    .hero p {
+      color: rgba(255,255,255,.8);
+      margin-bottom: 0;
+    }
+
+    .search-box {
+      max-width: 720px;
+      margin: 24px auto 0;
+      position: relative;
+    }
+
+    .search-box input {
+      border: 0;
+      border-radius: 14px;
+      padding: 16px 18px 16px 48px;
+      box-shadow: 0 8px 25px rgba(0,0,0,.13);
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 17px;
+      top: 17px;
+      color: #73829a;
+      font-size: 1.1rem;
+    }
+
+    .main-wrap {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 28px 16px 60px;
+    }
+
+    .nav-tabs {
+      border-bottom: 1px solid var(--border);
+      gap: 6px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+    }
+
+    .nav-tabs .nav-link {
+      color: #65748a;
+      border: 0;
+      border-radius: 10px 10px 0 0;
+      padding: 12px 18px;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    .nav-tabs .nav-link.active {
+      color: var(--blue);
+      background: #fff;
+      border-bottom: 3px solid var(--blue);
+    }
+
+    .content-panel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0 0 16px 16px;
+      padding: 24px;
+      min-height: 360px;
+      box-shadow: 0 5px 20px rgba(31,50,81,.035);
+    }
+
+    .section-title {
+      font-weight: 750;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .section-subtitle {
+      color: var(--muted);
+      font-size: .92rem;
+      margin-bottom: 20px;
+    }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .filter-btn {
+      border: 1px solid #dce4ef;
+      background: #fff;
+      color: #586981;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: .88rem;
+      transition: .15s;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: var(--light-blue);
+      border-color: #a9c0e3;
+      color: var(--blue);
+    }
+
+    .qa-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .qa-question {
+      width: 100%;
+      background: #fff;
+      border: 0;
+      padding: 17px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      text-align: left;
+      color: var(--text);
+      font-weight: 650;
+    }
+
+    .qa-question:hover {
+      background: #f9fbfe;
+    }
+
+    .qa-answer {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 18px;
+      line-height: 1.85;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      color: #475569;
+    }
+
+    .qa-answer.show {
+      display: block;
+    }
+
+    .category-badge {
+      display: inline-block;
+      background: var(--light-blue);
+      color: var(--blue);
+      border-radius: 6px;
+      padding: 3px 9px;
+      font-size: .78rem;
+      font-weight: 650;
+      margin-bottom: 9px;
+    }
+
+    .note-box {
+      background: #fff9e9;
+      border-left: 4px solid #e4b54f;
+      padding: 11px 14px;
+      border-radius: 5px;
+      margin-top: 12px;
+      white-space: pre-wrap;
+      font-size: .9rem;
+    }
+
+    .law-box {
+      background: #f2f6fc;
+      border-left: 4px solid #6c91c4;
+      padding: 11px 14px;
+      border-radius: 5px;
+      margin-top: 10px;
+      white-space: pre-wrap;
+      font-size: .9rem;
+    }
+
+    .data-card {
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 18px;
+      height: 100%;
+      background: #fff;
+      transition: .18s;
+    }
+
+    .data-card:hover {
+      border-color: #b8cbe5;
+      box-shadow: 0 7px 20px rgba(31,50,81,.07);
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 11px;
+      background: var(--light-blue);
+      color: var(--blue);
+      font-size: 1.2rem;
+      margin-bottom: 13px;
+    }
+
+    .card-title {
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .card-description {
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .flow-image {
+      width: 100%;
+      max-height: 580px;
+      object-fit: contain;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fafbfd;
+      cursor: zoom-in;
+    }
+
+    .flow-steps {
+      white-space: pre-wrap;
+      line-height: 1.9;
+      color: #475569;
+    }
+
+    .staff-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      height: 100%;
+    }
+
+    .staff-name {
+      font-weight: 750;
+      color: var(--navy);
+      font-size: 1.1rem;
+    }
+
+    .staff-field {
+      font-size: .9rem;
+      color: #526176;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .staff-label {
+      color: #8995a6;
+      font-size: .78rem;
+      margin-top: 10px;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: #94a0b1;
+      padding: 45px 15px;
+    }
+
+    .empty-state i {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .loading-state {
+      text-align: center;
+      color: var(--muted);
+      padding: 55px 15px;
+    }
+
+    .footer {
+      text-align: center;
+      color: #94a0b1;
+      font-size: .82rem;
+      padding: 20px 10px 35px;
+    }
+
+    .form-label {
+      font-weight: 650;
+      font-size: .9rem;
+    }
+
+    .required-mark {
+      color: #dc3545;
+    }
+
+    @media (max-width: 576px) {
+      .hero {
+        padding: 30px 0;
+      }
+
+      .content-panel {
+        padding: 16px;
+      }
+
+      .nav-tabs .nav-link {
+        padding: 11px 13px;
+        font-size: .88rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- 導覽列 -->
+<nav class="navbar navbar-dark">
+  <div class="container-fluid px-3 px-lg-4">
+    <a class="navbar-brand" href="#">
+      <i class="bi bi-journal-check me-2"></i>
+      國科會計畫經費報銷查詢
+    </a>
+
+  </div>
+</nav>
+
+
+<!-- 首頁搜尋區 -->
+<section class="hero">
+  <div class="container text-center">
+    <h1>國科會計畫經費報銷查詢中心</h1>
+    <p>快速查詢報帳規定、作業流程、相關網站及承辦人員</p>
+
+    <div class="search-box">
+      <i class="bi bi-search"></i>
+      <input id="globalSearch"
+             class="form-control form-control-lg"
+             type="search"
+             placeholder="點選下面頁面再輸入關鍵字，例如：國外差旅費、設備費、註冊費、承辦業務..."
+             autocomplete="off">
+    </div>
+  </div>
+</section>
+
+
+<!-- 主要內容 -->
+<main class="main-wrap">
+
+  <section class="content-panel mb-4" aria-labelledby="popularTitle">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+      <div>
+        <h5 class="section-title mb-1" id="popularTitle">
+          <i class="bi bi-fire me-1 text-danger"></i>大家最常查詢的問題
+        </h5>
+        <p class="section-subtitle mb-0">依使用者實際開啟答案的次數自動排序，顯示前 5 名。</p>
+      </div>
+      <span class="badge text-bg-light border">熱門 TOP 5</span>
+    </div>
+    <div id="popularQuestions">
+      <div class="text-muted small">正在載入熱門問題...</div>
+    </div>
+  </section>
+
+  <ul class="nav nav-tabs" id="mainTabs" role="tablist">
+
+    <li class="nav-item">
+      <button class="nav-link active"
+              data-bs-toggle="tab"
+              data-bs-target="#qaPanel"
+              type="button">
+        <i class="bi bi-question-circle me-1"></i>QA問題查詢
+      </button>
+    </li>
+
+    <li class="nav-item">
+      <button class="nav-link"
+              data-bs-toggle="tab"
+              data-bs-target="#flowPanel"
+              type="button">
+        <i class="bi bi-diagram-3 me-1"></i>報銷流程圖
+      </button>
+    </li>
+
+    <li class="nav-item">
+      <button class="nav-link"
+              data-bs-toggle="tab"
+              data-bs-target="#websitePanel"
+              type="button">
+        <i class="bi bi-globe me-1"></i>相關網站
+      </button>
+    </li>
+
+    <li class="nav-item">
+      <button class="nav-link"
+              data-bs-toggle="tab"
+              data-bs-target="#staffPanel"
+              type="button">
+        <i class="bi bi-people me-1"></i>承辦人員
+      </button>
+    </li>
+
+  </ul>
+
+
+  <div class="tab-content">
+
+    <!-- A：QA -->
+    <section class="tab-pane fade show active"
+             id="qaPanel">
+
+      <div class="content-panel">
+
+        <h5 class="section-title">常見問題與解答</h5>
+        <p class="section-subtitle">
+          可依問題、解答、備註、法規依據及自訂關鍵字搜尋。
+        </p>
+
+        <div id="qaFilters" class="filter-row"></div>
+        <div id="qaList">
+          <div class="loading-state">
+            <div class="spinner-border spinner-border-sm me-2"></div>
+            正在載入資料...
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- B：流程圖 -->
+    <section class="tab-pane fade" id="flowPanel">
+
+      <div class="content-panel">
+
+        <h5 class="section-title">經費報銷流程圖</h5>
+        <p class="section-subtitle">
+          選擇經費類別，查看流程圖及文字說明。
+        </p>
+
+        <div class="row g-3 align-items-end mb-4">
+          <div class="col-md-6">
+            <label class="form-label" for="flowCategory">
+              經費類別
+            </label>
+            <select id="flowCategory" class="form-select">
+              <option value="">載入中...</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="flowList">
+          <div class="loading-state">正在載入資料...</div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- C：網站 -->
+    <section class="tab-pane fade" id="websitePanel">
+
+      <div class="content-panel">
+
+        <h5 class="section-title">相關網站與表單下載</h5>
+        <p class="section-subtitle">
+          常用行政系統、外部網站及表單資源。
+        </p>
+
+        <div id="websiteFilters" class="filter-row"></div>
+        <div id="websiteList" class="row g-3"></div>
+
+      </div>
+    </section>
+
+
+    <!-- D：承辦人員 -->
+    <section class="tab-pane fade" id="staffPanel">
+
+      <div class="content-panel">
+
+        <h5 class="section-title">承辦人員資訊</h5>
+        <p class="section-subtitle">
+          可搜尋姓名、單位、負責業務、分機、Email 及自訂關鍵字。
+        </p>
+
+        <div id="staffList" class="row g-3"></div>
+
+      </div>
+    </section>
+
+  </div>
+</main>
+
+
+<div class="footer">
+  國科會計畫經費報銷查詢網站｜資料由 Google 試算表管理｜網站架設於 Cloudflare Pages
+</div>
+
+
+<!-- 圖片放大 Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content bg-dark">
+      <div class="modal-header border-0">
+        <div class="text-white" id="imageModalTitle"></div>
+        <button type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img id="largeImage"
+             src=""
+             alt="流程圖放大檢視"
+             style="max-width:100%;max-height:80vh;object-fit:contain;">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+  // =========================================
+  // 全域資料：網頁載入時一次取得
+  // =========================================
+
+  let DB = {
+    qa: [],
+    flows: [],
+    websites: [],
+    staff: [],
+    popularQuestions: []
+  };
+
+  let qaCategory = '全部';
+  let websiteCategory = '全部';
+
+
+  // =========================================
+  // 初始化
+  // =========================================
+
+  document.addEventListener('DOMContentLoaded', function() {
+
+    document.getElementById('globalSearch')
+      .addEventListener('input', renderAll);
+
+    document.getElementById('flowCategory')
+      .addEventListener('change', renderFlows);
+
+    loadData();
+  });
+
+
+  // =========================================
+  // 從 Google 試算表讀取所有資料
+  // =========================================
+
+  function loadData() {
+
+    showLoading();
+
+    fetch('/api/data')
+      .then(function(response) {
+        if (!response.ok) throw new Error('伺服器回應 ' + response.status);
+        return response.json();
+      })
+      .then(function(data) {
+        DB = data || { qa: [], flows: [], websites: [], staff: [], popularQuestions: [] };
+        DB.qa = DB.qa || [];
+        DB.flows = DB.flows || [];
+        DB.websites = DB.websites || [];
+        DB.staff = DB.staff || [];
+        DB.popularQuestions = DB.popularQuestions || [];
+        renderAll();
+      })
+      .catch(function(error) {
+        document.getElementById('qaList').innerHTML =
+          '<div class="alert alert-danger">資料載入失敗：' +
+          escapeHtml(error.message || error) + '</div>';
+      });
+  }
+
+
+  function showLoading() {
+    document.getElementById('qaList').innerHTML =
+      '<div class="loading-state">正在讀取資料...</div>';
+
+    document.getElementById('flowList').innerHTML =
+      '<div class="loading-state">正在讀取資料...</div>';
+
+    document.getElementById('websiteList').innerHTML =
+      '<div class="loading-state">正在讀取資料...</div>';
+
+    document.getElementById('staffList').innerHTML =
+      '<div class="loading-state">正在讀取資料...</div>';
+  }
+
+
+  // =========================================
+  // 共用工具
+  // =========================================
+
+  function getKeyword() {
+    return document.getElementById('globalSearch')
+      .value.trim().toLowerCase();
+  }
+
+
+  function includesKeyword(values, keyword) {
+    if (!keyword) return true;
+
+    return values.some(function(value) {
+      return String(value || '')
+        .toLowerCase()
+        .includes(keyword);
+    });
+  }
+
+
+  function escapeHtml(value) {
+    return String(value === null || value === undefined ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+
+  function escapeAttribute(value) {
+    return escapeHtml(value);
+  }
+
+
+  function uniqueCategories(rows, field) {
+    const categories = rows
+      .map(function(row) {
+        return String(row[field] || '').trim();
+      })
+      .filter(function(value) {
+        return value !== '';
+      });
+
+    return Array.from(new Set(categories))
+      .sort(function(a, b) {
+        return a.localeCompare(b, 'zh-Hant');
+      });
+  }
+
+
+  function renderAll() {
+    renderQaFilters();
+    renderQa();
+    renderFlowOptions();
+    renderFlows();
+    renderWebsiteFilters();
+    renderWebsites();
+    renderStaff();
+    renderPopularQuestions();
+  }
+
+
+  // =========================================
+  // A：QA 問答
+  // =========================================
+
+  function renderQaFilters() {
+
+    const categories = ['全部'].concat(
+      uniqueCategories(DB.qa, '分類')
+    );
+
+    const container = document.getElementById('qaFilters');
+
+    if (categories.indexOf(qaCategory) === -1) {
+      qaCategory = '全部';
+    }
+
+    container.innerHTML = categories.map(function(category) {
+
+      const active = category === qaCategory ? 'active' : '';
+
+      return `
+        <button type="button"
+                class="filter-btn ${active}"
+                data-category="${escapeAttribute(category)}"
+                onclick="setQaCategory(this.dataset.category)">
+          ${escapeHtml(category)}
+        </button>
+      `;
+
+    }).join('');
+  }
+
+
+  function setQaCategory(category) {
+    qaCategory = category;
+    renderQaFilters();
+    renderQa();
+  }
+
+
+  function renderQa() {
+
+    const keyword = getKeyword();
+
+    const rows = DB.qa.filter(function(row) {
+
+      const categoryMatch =
+        qaCategory === '全部' || row['分類'] === qaCategory;
+
+      const keywordMatch = includesKeyword([
+        row['分類'],
+        row['問題'],
+        row['解答'],
+        row['備註'],
+        row['法規依據'],
+        row['關鍵字']
+      ], keyword);
+
+      return categoryMatch && keywordMatch;
+    });
+
+    const container = document.getElementById('qaList');
+
+    if (!rows.length) {
+      container.innerHTML = emptyState('找不到符合條件的問題');
+      return;
+    }
+
+    container.innerHTML = rows.map(function(row, index) {
+
+      const answer = escapeHtml(row['解答']).replace(/\n/g, '<br>');
+
+      const note = row['備註']
+        ? `<div class="note-box"><strong>備註：</strong><br>${escapeHtml(row['備註'])}</div>`
+        : '';
+
+      const law = row['法規依據']
+        ? `<div class="law-box"><strong>法規依據：</strong><br>${escapeHtml(row['法規依據'])}</div>`
+        : '';
+
+      return `
+        <article class="qa-item">
+          <button class="qa-question"
+                  type="button"
+                  data-category="${escapeAttribute(row['分類'])}"
+                  data-question="${escapeAttribute(row['問題'])}"
+                  onclick="toggleQa(this)">
+            <span>
+              <span class="category-badge">${escapeHtml(row['分類'])}</span><br>
+              ${escapeHtml(row['問題'])}
+            </span>
+            <i class="bi bi-chevron-down"></i>
+          </button>
+
+          <div class="qa-answer">
+            <strong>詳細解答</strong>
+            <div class="mt-2">${answer}</div>
+            ${note}
+            ${law}
+          </div>
+        </article>
+      `;
+
+    }).join('');
+  }
+
+
+  function toggleQa(button) {
+    const answer = button.nextElementSibling;
+    const isOpening = !answer.classList.contains('show');
+    answer.classList.toggle('show');
+
+    const icon = button.querySelector('i');
+    if (icon) {
+      icon.classList.toggle('bi-chevron-down', !isOpening);
+      icon.classList.toggle('bi-chevron-up', isOpening);
+    }
+
+    // 只有展開答案時才記錄點閱。
+    if (isOpening) {
+      recordQuestionView(button.dataset.category || '', button.dataset.question || '');
+    }
+  }
+
+  function recordQuestionView(category, question) {
+    if (!category || !question) return;
+
+    fetch('/api/view', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category: category, question: question })
+    })
+      .then(function(response) {
+        if (!response.ok) throw new Error('點閱紀錄失敗：' + response.status);
+        return fetch('/api/popular');
+      })
+      .then(function(response) {
+        if (!response.ok) throw new Error('熱門問題讀取失敗');
+        return response.json();
+      })
+      .then(function(rows) {
+        DB.popularQuestions = rows || [];
+        renderPopularQuestions();
+      })
+      .catch(function(error) {
+        console.warn('熱門問題點閱紀錄失敗：', error);
+      });
+  }
+
+  function renderPopularQuestions() {
+    const container = document.getElementById('popularQuestions');
+    if (!container) return;
+
+    const rows = (DB.popularQuestions || []).slice(0, 5);
+    if (!rows.length) {
+      container.innerHTML =
+        '<div class="text-muted small py-2">目前尚無熱門問題紀錄；使用者開始點開問題後，系統會自動累計並顯示排行榜。</div>';
+      return;
+    }
+
+    container.innerHTML = rows.map(function(row, index) {
+      const rankClass = index === 0 ? 'text-danger' : 'text-secondary';
+      return `
+        <button type="button"
+                class="btn btn-light border w-100 text-start mb-2 d-flex align-items-center gap-3"
+                data-category="${escapeAttribute(row.category)}"
+                data-question="${escapeAttribute(row.question)}"
+                onclick="openPopularQuestion(this)">
+          <span class="fw-bold ${rankClass}" style="min-width:2rem;font-size:1.1rem;">${index + 1}</span>
+          <span class="flex-grow-1">${escapeHtml(row.question)}</span>
+          <span class="badge text-bg-light border">${Number(row.views) || 0} 次</span>
+        </button>`;
+    }).join('');
+  }
+
+  function openPopularQuestion(button) {
+    const category = button.dataset.category || '';
+    const question = button.dataset.question || '';
+
+    qaCategory = '全部';
+    document.getElementById('globalSearch').value = '';
+    renderAll();
+
+    const qaTab = document.querySelector('[data-bs-target="#qaPanel"]');
+    if (qaTab) bootstrap.Tab.getOrCreateInstance(qaTab).show();
+
+    const target = Array.from(document.querySelectorAll('#qaList .qa-question'))
+      .find(function(item) {
+        return item.dataset.category === category && item.dataset.question === question;
+      });
+
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (!target.nextElementSibling.classList.contains('show')) toggleQa(target);
+    }
+  }
+
+
+  // =========================================
+  // B：經費報銷流程圖
+  // =========================================
+
+  function renderFlowOptions() {
+
+    const select = document.getElementById('flowCategory');
+    const categories = uniqueCategories(DB.flows, '分類');
+
+    const oldValue = select.value;
+
+    select.innerHTML = categories.length
+      ? categories.map(function(category) {
+          return `<option value="${escapeAttribute(category)}">${escapeHtml(category)}</option>`;
+        }).join('')
+      : '<option value="">目前尚無流程資料</option>';
+
+    if (categories.indexOf(oldValue) !== -1) {
+      select.value = oldValue;
+    }
+  }
+
+
+  function renderFlows() {
+
+    const selected = document.getElementById('flowCategory').value;
+    const keyword = getKeyword();
+
+    const rows = DB.flows.filter(function(row) {
+
+      const categoryMatch =
+        !selected || row['分類'] === selected;
+
+      const keywordMatch = includesKeyword([
+        row['分類'],
+        row['流程名稱'],
+        row['步驟說明'],
+        row['注意事項']
+      ], keyword);
+
+      return categoryMatch && keywordMatch;
+
+    }).sort(function(a, b) {
+      return Number(a['排序'] || 999999) -
+             Number(b['排序'] || 999999);
+    });
+
+    const container = document.getElementById('flowList');
+
+    if (!rows.length) {
+      container.innerHTML = emptyState('此類別目前沒有流程資料');
+      return;
+    }
+
+    container.innerHTML = rows.map(function(row, index) {
+
+      const imageUrl = driveImageUrl(row['圖片連結']);
+
+      const image = imageUrl
+        ? `
+          <div class="mb-4">
+            <img class="flow-image"
+                 src="${escapeAttribute(imageUrl)}"
+                 alt="${escapeAttribute(row['流程名稱'])}"
+                 onclick="openImage(this.src, '${escapeAttribute(row['流程名稱'])}')"
+                 onerror="this.parentElement.innerHTML='<div class=&quot;alert alert-warning&quot;>圖片無法顯示，請確認雲端硬碟分享權限及圖片連結。</div>'">
+            <div class="small text-muted mt-2">
+              <i class="bi bi-zoom-in me-1"></i>點擊圖片可放大檢視
+            </div>
+          </div>
+        `
+        : '';
+
+      const steps = row['步驟說明']
+        ? `<div class="mb-3"><h6 class="fw-bold">文字步驟說明</h6><div class="flow-steps">${escapeHtml(row['步驟說明'])}</div></div>`
+        : '';
+
+      const notes = row['注意事項']
+        ? `<div class="note-box"><strong>注意事項</strong><br>${escapeHtml(row['注意事項'])}</div>`
+        : '';
+
+      return `
+        <div class="mb-4 pb-4 ${index < rows.length - 1 ? 'border-bottom' : ''}">
+          <span class="category-badge">${escapeHtml(row['分類'])}</span>
+          <h5 class="fw-bold mt-1 mb-3">${escapeHtml(row['流程名稱'])}</h5>
+          ${image}
+          ${steps}
+          ${notes}
+        </div>
+      `;
+
+    }).join('');
+  }
+
+
+  /**
+   * Google Drive 分享網址轉圖片網址
+   */
+  function driveImageUrl(url) {
+
+    const input = String(url || '').trim();
+
+    if (!input) return '';
+
+    let match = input.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+
+    if (!match) {
+      match = input.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    }
+
+    if (match) {
+      return 'https://drive.google.com/thumbnail?id=' +
+        encodeURIComponent(match[1]) + '&sz=w1600';
+    }
+
+    return input;
+  }
+
+
+  function openImage(src, title) {
+    document.getElementById('largeImage').src = src;
+    document.getElementById('imageModalTitle').textContent = title;
+
+    bootstrap.Modal.getOrCreateInstance(
+      document.getElementById('imageModal')
+    ).show();
+  }
+
+
+  // =========================================
+  // C：相關網站
+  // =========================================
+
+  function renderWebsiteFilters() {
+
+    const categories = ['全部'].concat(
+      uniqueCategories(DB.websites, '分類')
+    );
+
+    const container = document.getElementById('websiteFilters');
+
+    if (categories.indexOf(websiteCategory) === -1) {
+      websiteCategory = '全部';
+    }
+
+    container.innerHTML = categories.map(function(category) {
+
+      const active = category === websiteCategory ? 'active' : '';
+
+      return `
+        <button type="button"
+                class="filter-btn ${active}"
+                data-category="${escapeAttribute(category)}"
+                onclick="setWebsiteCategory(this.dataset.category)">
+          ${escapeHtml(category)}
+        </button>
+      `;
+
+    }).join('');
+  }
+
+
+  function setWebsiteCategory(category) {
+    websiteCategory = category;
+    renderWebsiteFilters();
+    renderWebsites();
+  }
+
+
+  function renderWebsites() {
+
+    const keyword = getKeyword();
+
+    const rows = DB.websites.filter(function(row) {
+
+      const categoryMatch =
+        websiteCategory === '全部' ||
+        row['分類'] === websiteCategory;
+
+      const keywordMatch = includesKeyword([
+        row['分類'],
+        row['網站名稱'],
+        row['網址'],
+        row['簡介']
+      ], keyword);
+
+      return categoryMatch && keywordMatch;
+
+    });
+
+    const container = document.getElementById('websiteList');
+
+    if (!rows.length) {
+      container.innerHTML =
+        `<div class="col-12">${emptyState('找不到符合條件的網站')}</div>`;
+      return;
+    }
+
+    container.innerHTML = rows.map(function(row) {
+
+      const url = safeExternalUrl(row['網址']);
+
+      const link = url
+        ? `<a class="btn btn-sm btn-outline-primary mt-3"
+              href="${escapeAttribute(url)}"
+              target="_blank"
+              rel="noopener noreferrer">
+              前往網站 <i class="bi bi-box-arrow-up-right ms-1"></i>
+           </a>`
+        : '<span class="text-muted small">網址格式不正確</span>';
+
+      return `
+        <div class="col-md-6 col-lg-4">
+          <article class="data-card">
+            <div class="card-icon">
+              <i class="bi bi-globe2"></i>
+            </div>
+            <span class="category-badge">${escapeHtml(row['分類'])}</span>
+            <h6 class="card-title">${escapeHtml(row['網站名稱'])}</h6>
+            <p class="card-description">${escapeHtml(row['簡介'])}</p>
+            ${link}
+          </article>
+        </div>
+      `;
+
+    }).join('');
+  }
+
+
+  function safeExternalUrl(value) {
+    const url = String(value || '').trim();
+
+    if (/^https?:\/\/[^\s]+$/i.test(url)) {
+      return url;
+    }
+
+    return '';
+  }
+
+
+  // =========================================
+  // D：承辦人員
+  // =========================================
+
+  function renderStaff() {
+
+    const keyword = getKeyword();
+
+    const rows = DB.staff.filter(function(row) {
+
+      return includesKeyword([
+        row['單位'],
+        row['負責業務'],
+        row['姓名'],
+        row['分機'],
+        row['Email'],
+        row['職務代理人'],
+        row['關鍵字']
+      ], keyword);
+
+    });
+
+    const container = document.getElementById('staffList');
+
+    if (!rows.length) {
+      container.innerHTML =
+        `<div class="col-12">${emptyState('找不到符合條件的承辦人員')}</div>`;
+      return;
+    }
+
+    container.innerHTML = rows.map(function(row) {
+
+      const email = String(row['Email'] || '').trim();
+
+      const emailHtml = email
+        ? `<a href="mailto:${escapeAttribute(email)}">${escapeHtml(email)}</a>`
+        : '未提供';
+
+      return `
+        <div class="col-md-6">
+          <article class="staff-card">
+
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="card-icon mb-0">
+                <i class="bi bi-person-badge"></i>
+              </div>
+              <div>
+                <div class="staff-name">${escapeHtml(row['姓名'])}</div>
+                <div class="small text-muted">${escapeHtml(row['單位'])}</div>
+              </div>
+            </div>
+
+            <div class="staff-label">負責業務項目</div>
+            <div class="staff-field">${escapeHtml(row['負責業務'])}</div>
+
+            <div class="row mt-2">
+              <div class="col-6">
+                <div class="staff-label">分機號碼</div>
+                <div class="staff-field">${escapeHtml(row['分機']) || '未提供'}</div>
+              </div>
+
+              <div class="col-6">
+                <div class="staff-label">職務代理人</div>
+                <div class="staff-field">${escapeHtml(row['職務代理人']) || '未提供'}</div>
+              </div>
+            </div>
+
+            <div class="staff-label">Email</div>
+            <div class="staff-field">${emailHtml}</div>
+
+          </article>
+        </div>
+      `;
+
+    }).join('');
+  }
+
+
+  // =========================================
+  // 無資料提示
+  // =========================================
+
+  function emptyState(message) {
+    return `
+      <div class="empty-state">
+        <i class="bi bi-search"></i>
+        ${escapeHtml(message)}
+      </div>
+    `;
+  }
+
+</script>
+
+</body>
+</html>
